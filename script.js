@@ -14,9 +14,15 @@ function calculate()
     const magnification_result = yaw1 / yaw2;
     const percentage_results = (pitch1 / pitch2) / magnification_result;
 
+    if (magnification_result.toFixed(7) >= 0.2 && magnification_result.toFixed(6) <= 20) {
+        document.getElementById("magnification_result").textContent = magnification_result.toFixed(6);
+    } else {
+        document.getElementById("magnification_result").textContent = "変換できない感度です";
+    }
 
-    if(magnification_result.toFixed(7) >= 0.2 && magnification_result.toFixed(6) <= 20) document.getElementById("magnification_result").textContent = magnification_result.toFixed(6);
-    else document.getElementById("magnification_result").textContent = "変換できない感度です"
-    if(percentage_results <= 1 && percentage_results >= 0.01) document.getElementById("percentage_results").textContent = (percentage_results * 100).toFixed(0);
-    else document.getElementById("percentage_results").textContent = "変換できない感度です"
+    if (percentage_results <= 1 && percentage_results >= 0.01) {
+        document.getElementById("percentage_results").textContent = (percentage_results * 100).toFixed(3); // 小数点第3位まで表示
+    } else {
+        document.getElementById("percentage_results").textContent = "変換できない感度です";
+    }
 };
