@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import presetData from '../data/presets.json';
+  import { formatArgumentValue } from '../lib/format-argument-value.mjs';
 
   type Preset = { id: string; name: string; description: string; options: string[]; source: string };
   type Registration = { name: string; default: string; value_kind: string; min_bound: string; max_bound: string; help: string; description: string; confidence: string; category: string };
@@ -17,21 +18,10 @@
   let loading = true;
   let ga: Window['gtag'] | undefined;
   $: matches = options.filter((option) => `${option.name} ${option.category} ${option.help} ${option.description}`.toLowerCase().includes(query.toLowerCase())).slice(0, 80);
-  $: command = selected.map(({ name, value }) => `+${name}${value ? ` ${value}` : ''}`).join(' ');
+  $: command = selected.map(({ name, value }) => `+${name}${value ? ` ${formatArgumentValue(value)}` : ''}`).join(' ');
   $: rankedPresets = [...presets].sort((a, b) => (rankings.find((r) => r.id === b.id)?.users ?? 0) - (rankings.find((r) => r.id === a.id)?.users ?? 0));
 
   onMount(async () => {
-    try {
-      const [optionResponse, rankResponse] = await Promise.all([
-        fetch(`${base}data/registrations.json`), fetch(`${base}data/preset-rankings.json`)
-      ]);
-      options = await optionResponse.json();
-      rankings = (await rankResponse.json()).rankings ?? [];
-    } catch (error) {
-      console.error('Could not load option data', error);
-    } finally {
-      loading = false;
-    }
     const measurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
     if (measurementId) {
       window.dataLayer = window.dataLayer || [];
@@ -43,6 +33,17 @@
       script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
       document.head.append(script);
       ga = window.gtag;
+    }
+    try {
+      const [optionResponse, rankResponse] = await Promise.all([
+        fetch(`${base}data/registrations.json`), fetch(`${base}data/preset-rankings.json`)
+      ]);
+      options = await optionResponse.json();
+      rankings = (await rankResponse.json()).rankings ?? [];
+    } catch (error) {
+      console.error('Could not load option data', error);
+    } finally {
+      loading = false;
     }
   });
 

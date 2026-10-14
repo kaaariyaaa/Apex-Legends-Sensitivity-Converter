@@ -3,7 +3,10 @@ import { readFile, writeFile } from 'node:fs/promises';
 
 const propertyId = process.env.GA4_PROPERTY_ID;
 const credentials = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
-if (!propertyId || !credentials) throw new Error('Set GA4_PROPERTY_ID and GOOGLE_SERVICE_ACCOUNT_JSON.');
+if (!propertyId || !credentials) {
+  console.info('Skipping preset ranking update: GA4 credentials are not configured.');
+  process.exit(0);
+}
 
 const client = new BetaAnalyticsDataClient({ credentials: JSON.parse(credentials) });
 const [report] = await client.runReport({
