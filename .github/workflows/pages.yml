@@ -51,7 +51,7 @@ jobs:
       - name: Build launch option builder
         working-directory: apex-boot-option-builder
         env:
-          ASTRO_BASE_PATH: ./
+          ASTRO_BASE_PATH: /apex-boot-option-builder/
           ASTRO_OUT_DIR: ../dist/apex-boot-option-builder
           PUBLIC_GA_MEASUREMENT_ID: ${{ vars.PUBLIC_GA_MEASUREMENT_ID }}
         run: npm run build
