@@ -1,0 +1,6 @@
+dist/
+apex-boot-option-builder/node_modules/
+apex-boot-option-builder/.astro/
+apex-boot-option-builder/.env
+apex-boot-option-builder/.env.*
+!apex-boot-option-builder/.env.example

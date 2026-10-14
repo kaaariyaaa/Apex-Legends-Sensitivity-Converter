@@ -1,0 +1,23 @@
+[
+  {
+    "id": "fps-120",
+    "name": "120 FPS上限",
+    "description": "フレームレートを120に制限します。",
+    "options": ["+fps_max 120"],
+    "source": "https://help.ea.com/ja/articles/apex-legends/change-and-cap-fps/"
+  },
+  {
+    "id": "fps-144",
+    "name": "144 FPS上限",
+    "description": "フレームレートを144に制限します。",
+    "options": ["+fps_max 144"],
+    "source": "https://help.ea.com/ja/articles/apex-legends/change-and-cap-fps/"
+  },
+  {
+    "id": "fps-165",
+    "name": "165 FPS上限",
+    "description": "フレームレートを165に制限します。",
+    "options": ["+fps_max 165"],
+    "source": "https://help.ea.com/ja/articles/apex-legends/change-and-cap-fps/"
+  }
+]

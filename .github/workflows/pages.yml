@@ -1,0 +1,62 @@
+name: Deploy Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '17 18 * * *'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apex-boot-option-builder/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Preserve the sensitivity converter at both existing paths
+        run: |
+          mkdir -p dist/Apex-Legends-Sensitivity-Converter
+          cp index.html script.js style.css dist/
+          cp index.html script.js style.css dist/Apex-Legends-Sensitivity-Converter/
+      - name: Install builder dependencies
+        working-directory: apex-boot-option-builder
+        run: npm ci
+      - name: Update preset rankings
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        working-directory: apex-boot-option-builder
+        env:
+          GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: npm run rankings
+      - name: Build launch option builder
+        working-directory: apex-boot-option-builder
+        env:
+          ASTRO_BASE_PATH: ./
+          ASTRO_OUT_DIR: ../dist/apex-boot-option-builder
+          PUBLIC_GA_MEASUREMENT_ID: ${{ vars.PUBLIC_GA_MEASUREMENT_ID }}
+        run: npm run build
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,21 @@
+{
+  "name": "apex-launch-option-builder",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "python3 scripts/prepare-data.py && astro check && astro build",
+    "preview": "astro preview",
+    "rankings": "node scripts/update-rankings.mjs"
+  },
+  "dependencies": {
+    "@astrojs/svelte": "^9.0.1",
+    "@google-analytics/data": "^5.2.0",
+    "astro": "^7.3.8",
+    "svelte": "^5.57.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.6",
+    "typescript": "^5.9.3"
+  }
+}
